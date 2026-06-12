@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>You Are — Pure 3D Roller (Fixed)</title>
+    <title>You Are — Premium Interactive 3D Roller</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     
     <style>
@@ -33,42 +33,42 @@
             justify-content: center;
             width: 100%;
             max-width: 1400px;
-            font-size: clamp(1.4rem, 3.6vw, 2.6rem); /* 保持你最满意的黄金字号 */
+            font-size: clamp(1.4rem, 3.6vw, 2.6rem); /* 黄金字号 */
             line-height: 1.2;
         }
 
-        /* 左侧固定锚点：微调占比与间距，增强整体呼吸感 */
+        /* 左侧固定锚点 */
         .fixed-text {
-            width: 28%; /* 🔒 修正：收紧左侧，为右侧 3D 形变让出更宽广的横向舞台 */
+            width: 28%; /* 28% 黄金占比 */
             text-align: right;
             font-weight: 500;
-            padding-right: 6%; /* 增加右侧间距，形成天然的安全隔离带 */      
+            padding-right: 6%; /* 优雅隔离带 */      
             white-space: nowrap;     
         }
 
         /* 右侧 3D 滚轴可视窗口 */
         .scroll-window {
-            width: 72%; /* 🔒 修正：扩大右侧容器占比 */
+            width: 72%; /* 72% 黄金占比 */
             text-align: left;
             position: relative;
             
-            /* 🔮 终极 Bug 修复：将 overflow 从 hidden 改为 visible！
-               配合真 3D 视界，允许旋转换行后的文字头部自由向左伸展，彻底根治左侧被切掉的惨剧。
-               因为我们有下方的 mask-image 控制上下淡出，所以左右放行完全不影响视觉完整性。
-            */
+            /* 🔒 完美保留：彻底放行左右，允许 3D 形变的字母自由伸展，根治切头 */
             overflow: visible; 
             
-            height: 8.2em; /* 严格保持你最满意的 5 行完美呈现高度 */          
+            height: 8.2em; /* 🔒 完美保留：5行显示高度 */          
             display: flex;
             align-items: center;
             
             /* 开启真 3D 空间硬件加速透视 */
             perspective: 1200px;
-            perspective-origin: left center; /* 透视原点靠左，确保并排时的中轴线完美贴合 */
+            perspective-origin: left center;
 
-            /* 上下边缘消散遮罩，还原 iPhone 闹钟边缘若隐若现的高级隐没感 */
+            /* 上下边缘消散遮罩 */
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
             mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+            
+            /* 个性化鼠标，暗示此处有极高级的滚动选择交互 */
+            cursor: ns-resize;
         }
 
         /* 滚轴总轨道 */
@@ -78,15 +78,17 @@
             width: 100%;
             position: absolute;
             left: 0;
-            top: 50%; /* 锁死在窗口垂直中心点 */
-            transform-style: preserve-3d; /* 激活子元素的真 3D 空间渲染 */
+            top: 50%; 
+            transform-style: preserve-3d; /* 激活真 3D 渲染 */
+            
+            /* 1.2s 的 cubic-bezier，确保无论是自动滚还是被手动拨动，都自带高级的苹果风阻尼缓动 */
             transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1); 
         }
 
         /* 滚轴单行容器 */
         .scrolling-item {
             width: 100%;
-            height: 1.6em; /* 严格固定每行高度，杜绝任何堆叠重叠 */
+            height: 1.6em; /* 固定每行高度 */
             display: flex;
             align-items: center;
             font-style: italic;      
@@ -94,23 +96,23 @@
             overflow: hidden;        
             text-overflow: ellipsis; 
             
-            /* 基础状态：默认在滚轴背面，完全透明隐藏 */
+            /* 基础状态：背部隐藏 */
             opacity: 0;
             transform-style: preserve-3d;
             backface-visibility: hidden;
             transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1), opacity 1s ease, color 1s ease;
+            
+            /* 禁止文字被鼠标误选中导致破坏整体视觉氛围 */
+            user-select: none;
         }
 
-        /* 🔮 3D 级联状态机：完全保留上一版你最满意的震撼空间轴度 */
-        
-        /* Level 0: 正中心（第 0 层）- 离用户最近，完全聚焦 */
+        /* 🔮 5行真3D级联状态机 */
         .scrolling-item.level-0 {
             opacity: 0.98;
             color: #1A1A1A;
             transform: rotateX(0deg) translateZ(100px); 
         }
 
-        /* Level 1: 上下第一层（距离中心±1行）- 微微躺倒，颜色变灰 */
         .scrolling-item.level-1-up {
             opacity: 0.55;
             color: #666666;
@@ -122,7 +124,6 @@
             transform: rotateX(-28deg) translateZ(60px) translateY(5px); 
         }
 
-        /* Level 2: 上下第二层（距离中心±2行）- 深度躺倒，濒临隐没（5行必备边缘层） */
         .scrolling-item.level-2-up {
             opacity: 0.18;
             color: #999999;
@@ -146,14 +147,13 @@
     <main class="main-container">
         <div class="fixed-text">You are</div>
 
-        <div class="scroll-window">
+        <div class="scroll-window" id="scrollWindow">
             <div class="scrolling-track" id="vibeTrack">
                 </div>
         </div>
     </main>
 
     <script>
-        // 单行治愈系英文文案库
         const SUB_PHRASES = [
             "enough, just as you are.",
             "doing better than you think.",
@@ -177,12 +177,16 @@
             "the magic this world needs."
         ];
 
+        const windowEl = document.getElementById('scrollWindow');
         const track = document.getElementById('vibeTrack');
         let currentIndex = 0;
         let domItems = [];
+        
+        let autoFlipTimer = null; // 自动轮播计时器
+        let isThrottled = false;   // 核心阀门：滚轮物理节流防抖锁
 
         function initScroller() {
-            // 三倍拼接，确保上下无论怎么滚，都有至少 2 行作为圆柱体垫底露出
+            // 三倍拼接，确保在手动上下滚动穿梭时有绝对充足的圆柱曲面垫底
             const triplePhrases = [...SUB_PHRASES, ...SUB_PHRASES, ...SUB_PHRASES];
             currentIndex = SUB_PHRASES.length;
 
@@ -197,20 +201,29 @@
             window.addEventListener('resize', updateLayout);
             updateLayout(); 
 
-            // 每 3.5 秒如同闹钟滚轮般清脆地转动一格
-            setInterval(nextSlide, 3500);
+            // 1. 开启初始状态的安静自动轮播（每 3.5 秒一格）
+            startAutoplay();
+
+            // 2. 鼠标悬停监听：一进来就停止自动，一离开就启动自动
+            windowEl.addEventListener('mouseenter', () => {
+                stopAutoplay();
+            });
+            windowEl.addEventListener('mouseleave', () => {
+                startAutoplay();
+            });
+
+            // 3. 注入全新升级的硬核滚轮防抖拦截系统
+            windowEl.addEventListener('wheel', handleMouseWheel, { passive: false });
         }
 
+        // 🌟 3D 滚轴中心点对齐与 5行 立体状态级联
         function updateLayout() {
             if (domItems.length === 0) return;
 
             const itemHeightPX = domItems[0].offsetHeight;
-            
-            // 3D 滚轴中心点对齐算法
             const targetY = -((currentIndex + 0.5) * itemHeightPX);
             track.style.transform = `translateY(${targetY}px)`;
 
-            // 5行 3D 空间立体级联渲染核心
             domItems.forEach((item, idx) => {
                 item.className = 'scrolling-item';
                 const distance = idx - currentIndex;
@@ -233,20 +246,70 @@
             });
         }
 
-        function nextSlide() {
-            currentIndex++;
+        function startAutoplay() {
+            if (autoFlipTimer) clearInterval(autoFlipTimer);
+            autoFlipTimer = setInterval(() => {
+                moveRoller(1); // 自动状态下保持顺时针向前推进一格
+            }, 3500);
+        }
+
+        function stopAutoplay() {
+            if (autoFlipTimer) clearInterval(autoFlipTimer);
+        }
+
+        // 驱动索引变更的通用控制机（包含越界无感复位逻辑）
+        function moveRoller(direction) {
+            currentIndex += direction;
             updateLayout();
 
-            // 无缝无感瞬间复位机制
-            if (currentIndex === SUB_PHRASES.length * 2) {
+            const len = SUB_PHRASES.length;
+
+            // 情况 A：向下滚穿了第二组（超过 20*2） -> 动画结束后在后台瞬间悄悄切回第一组的相同位置 (20)
+            if (currentIndex >= len * 2) {
                 setTimeout(() => {
                     track.style.transition = 'none';
-                    currentIndex = SUB_PHRASES.length;
+                    currentIndex = len;
                     updateLayout();
-                    track.offsetHeight; // 迫使强制浏览器重绘
+                    track.offsetHeight; // 强制重绘
                     track.style.transition = 'transform 1.2s cubic-bezier(0.65, 0, 0.35, 1)';
                 }, 1200);
             }
+            // 情况 B：向上滚穿了第一组的上限（低于 20） -> 动画结束后在后台瞬间悄悄切换回第二组的末尾相同位置
+            if (currentIndex < len) {
+                setTimeout(() => {
+                    track.style.transition = 'none';
+                    currentIndex = len * 2 - 1;
+                    updateLayout();
+                    track.offsetHeight; 
+                    track.style.transition = 'transform 1.2s cubic-bezier(0.65, 0, 0.35, 1)';
+                }, 1200);
+            }
+        }
+
+        // 🌟 核心优化：智能防抖与精准选句函数
+        function handleMouseWheel(event) {
+            // 劫持并禁止浏览器本身的页面全局网页滚动
+            event.preventDefault();
+
+            // 🔒 节流锁：如果上一次拨动引起的 3D 动画还未完成，直接拒绝本次高频突发事件
+            if (isThrottled) return;
+
+            isThrottled = true;
+
+            // 捕捉滚轮的绝对物理手势
+            if (event.deltaY > 0) {
+                // 手指往下拉（滚轮向下），代表想滚动到下一句
+                moveRoller(1);
+            } else if (event.deltaY < 0) {
+                // 手指往上拉（滚轮向上），代表想回退到上一句
+                moveRoller(-1);
+            }
+
+            // 350ms 的极速冷却锁。这可以让你在手动选句时，手指既能获得极为清脆、干练的“一格一卡位”顺从感，
+            // 同时也允许你以适当的频率流畅地翻页，再也不会产生乱闪和飞速空转的 bug。
+            setTimeout(() => {
+                isThrottled = false;
+            }, 350);
         }
 
         initScroller();
