@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>You Are — Premium Interactive 3D Roller</title>
+    <title>I Am — Premium Interactive 3D Roller</title>
+    <!-- 引入优雅的 Playfair Display 字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     
     <style>
@@ -13,19 +14,51 @@
             box-sizing: border-box;
         }
 
+        /* 极致氛围感背景：温暖燕麦白，并在上层覆盖极细微纸张纹理 */
         body {
             font-family: 'Playfair Display', serif;
-            background-color: #FAFAFA; /* 温暖的燕麦白 */
+            background-color: #FAF8F5; /* 暖调燕麦色 */
             color: #1A1A1A;
             min-height: 100vh;
             display: flex;
-            align-items: center;     /* 垂直居中 */
-            justify-content: center;  /* 水平居中 */
+            align-items: center;     
+            justify-content: center;  
             padding: 20px;
             overflow: hidden;
+            position: relative;
         }
 
-        /* 核心布局容器 */
+        /* 🎬 胶片电影级动态噪点背景 (Animated Film Grain) — 提升整体网页的纸张艺术感 */
+        body::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            width: 200%;
+            height: 200%;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+            opacity: 0.85;
+            pointer-events: none;
+            animation: grain-dance 8s steps(10) infinite;
+            z-index: 10;
+        }
+
+        @keyframes grain-dance {
+            0%, 100% { transform:translate(0, 0); }
+            10% { transform:translate(-1%, -1%); }
+            20% { transform:translate(-2%, 1%); }
+            30% { transform:translate(1%, -2%); }
+            40% { transform:translate(-1%, 3%); }
+            50% { transform:translate(-2%, 1%); }
+            60% { transform:translate(1%, 2%); }
+            70% { transform:translate(3%, -1%); }
+            80% { transform:translate(-1%, -2%); }
+            90% { transform:translate(2%, 1%); }
+        }
+
+        /* 核心内容网格容器 */
         .main-container {
             display: flex;
             flex-direction: row;     
@@ -33,42 +66,87 @@
             justify-content: center;
             width: 100%;
             max-width: 1400px;
-            font-size: clamp(1.4rem, 3.6vw, 2.6rem); /* 黄金字号 */
+            font-size: clamp(1.4rem, 3.6vw, 2.6rem); 
             line-height: 1.2;
+            position: relative;
+            z-index: 2;
         }
 
-        /* 左侧固定锚点 */
-        .fixed-text {
-            width: 28%; /* 28% 黄金占比 */
+        /* 左侧固定锚点：高度和垂直居中逻辑重新调整，以实现极致对齐 */
+        .fixed-text-container {
+            width: 28%; 
             text-align: right;
-            font-weight: 500;
-            padding-right: 6%; /* 优雅隔离带 */      
+            padding-right: 5%; /* 黄金微调：完美对齐右侧 0.5em 的首字内边距位移 */      
             white-space: nowrap;     
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            height: 8.2em; /* 与右侧高度完美一致 */
+            position: relative;
         }
 
-        /* 右侧 3D 滚轴可视窗口 */
+        .fixed-text {
+            font-weight: 500;
+            font-style: italic; /* 🔮 左右同频斜体：调用完全一致的斜体字形度量衡，让浏览器在绝对同一像素行渲染基准线 */
+            font-size: 1.12em;  /* 🔮 分量加成：微调放大左侧字号，增加视觉分量，与右侧长句达到完美平衡 */
+            position: absolute;
+            height: 1.6em; /* 高度设为与右侧一模一样的 1.6em */
+            display: flex; /* 使用与右侧相同的 flex center，确保文字渲染盒对齐 */
+            align-items: center;
+            top: calc(50% - 0.8em); /* 将高度中线锁定在容器 50% 轴线上，无缝平行 */
+            transition: opacity 1.4s cubic-bezier(0.3, 0.05, 0.1, 1), transform 1.4s cubic-bezier(0.3, 0.05, 0.1, 1);
+            transform-origin: right center;
+        }
+
+        .fixed-text.hidden {
+            opacity: 0;
+            transform: translateY(15px) scale(0.95);
+            pointer-events: none;
+        }
+
+        .fixed-text.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* 右侧 3D 滚轴可视舞台 */
         .scroll-window {
-            width: 72%; /* 72% 黄金占比 */
+            width: 72%; 
             text-align: left;
             position: relative;
-            
-            /* 🔒 完美保留：彻底放行左右，允许 3D 形变的字母自由伸展，根治切头 */
-            overflow: visible; 
-            
-            height: 8.2em; /* 🔒 完美保留：5行显示高度 */          
+            overflow: visible; /* 放行 3D 溢出，保障斜体字母舒展 */
+            height: 8.2em; /* 5行显示黄金舞台 */          
             display: flex;
             align-items: center;
             
-            /* 开启真 3D 空间硬件加速透视 */
-            perspective: 1200px;
+            perspective: 1200px; /* 激活视口真3D透视 */
             perspective-origin: left center;
 
-            /* 上下边缘消散遮罩 */
+            /* 上下边缘柔和消散滤镜 */
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
             mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
             
-            /* 个性化鼠标，暗示此处有极高级的滚动选择交互 */
             cursor: ns-resize;
+            touch-action: none; /* 禁用移动端默认滚动，由我们的手势接管 */
+        }
+
+        /* 3D 旋转卡槽背板（点击锁定时的温和光晕） */
+        .lock-glow-overlay {
+            position: absolute;
+            left: -10px;
+            width: calc(100% + 20px);
+            height: 1.8em;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 80%);
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+            transition: opacity 1.4s cubic-bezier(0.3, 0.05, 0.1, 1), transform 1.4s cubic-bezier(0.3, 0.05, 0.1, 1);
+            z-index: 1;
+        }
+
+        .lock-glow-overlay.active {
+            opacity: 1;
+            transform: scale(1);
         }
 
         /* 滚轴总轨道 */
@@ -79,31 +157,35 @@
             position: absolute;
             left: 0;
             top: 50%; 
-            transform-style: preserve-3d; /* 激活真 3D 渲染 */
-            
-            /* 1.2s 的 cubic-bezier，确保无论是自动滚还是被手动拨动，都自带高级的苹果风阻尼缓动 */
-            transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1); 
+            transform-style: preserve-3d; 
+            /* 1.4秒极其丝滑、缓缓流过的高阶阻尼慢移曲线 */
+            transition: transform 1.4s cubic-bezier(0.3, 0.05, 0.1, 1); 
         }
 
         /* 滚轴单行容器 */
         .scrolling-item {
             width: 100%;
-            height: 1.6em; /* 固定每行高度 */
+            height: 1.6em; 
             display: flex;
             align-items: center;
             font-style: italic;      
-            white-space: nowrap;     
+            white-space: nowrap;     /* 🔒 强制不换行：确保任何时候右侧都完美保持在一行内 */
             overflow: hidden;        
             text-overflow: ellipsis; 
             
-            /* 基础状态：背部隐藏 */
+            /* 为单行容器加入 0.5em 左侧内边距，确保斜体字母在 overflow: hidden 裁剪时不受边界挤压，完美舒展 */
+            padding-left: 0.5em;
+            padding-right: 1.5em; /* 预留右侧淡出安全带 */
+            
             opacity: 0;
             transform-style: preserve-3d;
             backface-visibility: hidden;
-            transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1), opacity 1s ease, color 1s ease;
-            
-            /* 禁止文字被鼠标误选中导致破坏整体视觉氛围 */
+            /* 让 3D 变换、渐变淡入淡出、文字变色在 1.4s 内处于同一纯物理缓动信道，呈现液体流过一般的柔滑质感 */
+            transition: transform 1.4s cubic-bezier(0.3, 0.05, 0.1, 1), 
+                        opacity 1.4s cubic-bezier(0.3, 0.05, 0.1, 1), 
+                        color 1.4s cubic-bezier(0.3, 0.05, 0.1, 1);
             user-select: none;
+            cursor: pointer;
         }
 
         /* 🔮 5行真3D级联状态机 */
@@ -113,65 +195,116 @@
             transform: rotateX(0deg) translateZ(100px); 
         }
 
+        /* 稍微点击后的回弹态 */
+        .scrolling-item.level-0.tick-pulse {
+            transform: rotateX(0deg) translateZ(115px) scale(1.02); /* 清脆机械回弹感 */
+            color: #d4af37; /* 瞬间带有金丝流光 */
+            /* 物理回弹在撞击时需极速瞬展(120ms)，随手势瞬间爆发，复位时再享受 1.4s 的优雅慢回，极具真实的弹性势能 */
+            transition: transform 0.12s cubic-bezier(0.25, 1, 0.5, 1) !important;
+        }
+
+        .scrolling-item.level-0.locked {
+            color: #c9a01c !important; /* 锁定状态下的高阶暖香槟金 */
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            font-weight: 500;
+        }
+
         .scrolling-item.level-1-up {
-            opacity: 0.55;
-            color: #666666;
+            opacity: 0.45;
+            color: #7A7A7A;
             transform: rotateX(28deg) translateZ(60px) translateY(-5px); 
         }
         .scrolling-item.level-1-down {
-            opacity: 0.55;
-            color: #666666;
+            opacity: 0.45;
+            color: #7A7A7A;
             transform: rotateX(-28deg) translateZ(60px) translateY(5px); 
         }
 
         .scrolling-item.level-2-up {
-            opacity: 0.18;
-            color: #999999;
+            opacity: 0.12;
+            color: #ACACAC;
             transform: rotateX(54deg) translateZ(10px) translateY(-12px) scale(0.95); 
         }
         .scrolling-item.level-2-down {
-            opacity: 0.18;
-            color: #999999;
+            opacity: 0.12;
+            color: #ACACAC;
             transform: rotateX(-54deg) translateZ(10px) translateY(12px) scale(0.95); 
         }
 
+        /* 底部操作反馈小贴士 */
+        .interaction-tip {
+            position: absolute;
+            bottom: 40px;
+            font-size: 0.8rem;
+            color: #9C9C9C;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-family: system-ui, -apple-system, sans-serif;
+            opacity: 0.5;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .interaction-tip.locked {
+            opacity: 0.8;
+            color: #c9a01c;
+        }
+
+        /* 移动端极其极限的单行字号锁死 */
         @media (max-width: 640px) {
             .main-container {
-                font-size: 1.1rem;   
+                font-size: clamp(0.95rem, 4vw, 1.4rem);   
+            }
+            .interaction-tip {
+                bottom: 25px;
             }
         }
     </style>
 </head>
 <body>
 
-    <main class="main-container">
-        <div class="fixed-text">You are</div>
+    <!-- 锁定氛围光斑 -->
+    <div class="lock-glow-overlay" id="lockGlow"></div>
 
+    <main class="main-container">
+        <!-- 左侧固定双态锚点 -->
+        <div class="fixed-text-container">
+            <span class="fixed-text visible" id="anchorNormal">I am</span>
+            <span class="fixed-text hidden" id="anchorLocked">Today, I am</span>
+        </div>
+
+        <!-- 右侧无缝 3D 滚轴窗口 -->
         <div class="scroll-window" id="scrollWindow">
             <div class="scrolling-track" id="vibeTrack">
-                </div>
+                <!-- 由 JS 驱动渲染 -->
+            </div>
         </div>
     </main>
 
+    <!-- 底部暗示交互的优雅小标语 -->
+    <div class="interaction-tip" id="statusTip">Scroll to wheel • Tap to freeze</div>
+
     <script>
+        // 🔮 极致单行治愈系高能第一人称文案
         const SUB_PHRASES = [
-            "enough, just as you are.",
-            "doing better than you think.",
-            "exactly where you need to be.",
-            "growing at your own pace.",
+            "enough, just as I am.",
+            "doing better than I think.",
+            "exactly where I need to be.",
+            "growing at my own pace.",
             "allowed to take a break.",
-            "the author of your own story.",
-            "braver than you feel right now.",
+            "the author of my own story.",
+            "braver than I feel right now.",
             "capable of amazing things.",
             "deserving of inner peace.",
-            "not defined by your past.",
+            "not defined by my past.",
             "the light in someone's dark.",
             "unfolding beautifully every day.",
-            "stronger than your deepest fear.",
-            "perfectly unique in your way.",
+            "stronger than my deepest fear.",
+            "perfectly unique in my way.",
             "allowed to say no today.",
             "creating a life that feels good.",
-            "closer to your dreams now.",
+            "closer to my dreams now.",
             "always worthy of real love.",
             "making real progress every day.",
             "the magic this world needs."
@@ -179,16 +312,33 @@
 
         const windowEl = document.getElementById('scrollWindow');
         const track = document.getElementById('vibeTrack');
+        const lockGlow = document.getElementById('lockGlow');
+        const anchorNormal = document.getElementById('anchorNormal');
+        const anchorLocked = document.getElementById('anchorLocked');
+        const statusTip = document.getElementById('statusTip');
+
         let currentIndex = 0;
         let domItems = [];
         
-        let autoFlipTimer = null; // 自动轮播计时器
-        let isThrottled = false;   // 核心阀门：滚轮物理节流防抖锁
+        let autoFlipTimer = null;    // 自动漫游引擎
+        let isLocked = false;        // 是否进入“定格抽签”模式
+        let isHovered = false;       // 鼠标是否悬停在上面
+
+        // 🔗 机械防抖控制阀与精密累加器
+        let isThrottled = false;
+        let accumDeltaY = 0;         
+        const ROLL_THRESHOLD = 50;   // 累计滚动力度达到 50 像素即清脆越过一格 (调高此值可增加旋钮重力感)
+        const COOL_DOWN = 350;       // 两次卡位之间的物理冷冻时间 (ms)，锁定一格一卡位，严防飞转
+        let decayTimer = null;       
+
+        // 🔗 移动端轻扫手势拦截器
+        let touchStartY = 0;
+        let isTouchCaptured = false;
 
         function initScroller() {
-            // 三倍拼接，确保在手动上下滚动穿梭时有绝对充足的圆柱曲面垫底
+            // 三倍拼接，支撑无缝上下物理无限穿梭
             const triplePhrases = [...SUB_PHRASES, ...SUB_PHRASES, ...SUB_PHRASES];
-            currentIndex = SUB_PHRASES.length;
+            currentIndex = SUB_PHRASES.length; // 从中间的第二组正序开始
 
             track.innerHTML = triplePhrases.map((phrase) => `
                 <div class="scrolling-item">
@@ -198,25 +348,48 @@
 
             domItems = Array.from(track.getElementsByClassName('scrolling-item'));
             
+            // 绑定事件
             window.addEventListener('resize', updateLayout);
             updateLayout(); 
 
-            // 1. 开启初始状态的安静自动轮播（每 3.5 秒一格）
+            // 启动初始状态的自动轮播
             startAutoplay();
 
-            // 2. 鼠标悬停监听：一进来就停止自动，一离开就启动自动
+            // 1. 悬停与离开事件：无锁时才会有悬停静止/自动恢复
             windowEl.addEventListener('mouseenter', () => {
-                stopAutoplay();
+                isHovered = true;
+                if (!isLocked) stopAutoplay();
             });
             windowEl.addEventListener('mouseleave', () => {
-                startAutoplay();
+                isHovered = false;
+                if (!isLocked) startAutoplay();
             });
 
-            // 3. 注入全新升级的硬核滚轮防抖拦截系统
-            windowEl.addEventListener('wheel', handleMouseWheel, { passive: false });
+            // 2. 机械锁频滚动侦听
+            windowEl.addEventListener('wheel', handleAccumWheel, { passive: false });
+
+            // 3. 移动触摸屏原生手势轻扫侦听
+            windowEl.addEventListener('touchstart', handleTouchStart, { passive: true });
+            windowEl.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+            // 4. “点击定格” 点击监听
+            domItems.forEach((item, idx) => {
+                item.addEventListener('click', () => {
+                    // 只有当点击的是正中间高亮的 level-0 元素时，才触发“锁定”
+                    if (idx === currentIndex) {
+                        toggleLock();
+                    }
+                });
+            });
+
+            // 5. 累加器物理衰减：当用户停止拨动，慢慢减少累积能量，防止悬停死区
+            decayTimer = setInterval(() => {
+                accumDeltaY *= 0.5;
+                if (Math.abs(accumDeltaY) < 1) accumDeltaY = 0;
+            }, 100);
         }
 
-        // 🌟 3D 滚轴中心点对齐与 5行 立体状态级联
+        // 🌟 3D对齐和级联分配
         function updateLayout() {
             if (domItems.length === 0) return;
 
@@ -230,6 +403,9 @@
 
                 if (distance === 0) {
                     item.classList.add('level-0');
+                    if (isLocked) {
+                        item.classList.add('locked');
+                    }
                 } 
                 else if (distance === -1) {
                     item.classList.add('level-1-up');
@@ -246,72 +422,181 @@
             });
         }
 
+        // 🌟 自动翻转引擎
         function startAutoplay() {
             if (autoFlipTimer) clearInterval(autoFlipTimer);
             autoFlipTimer = setInterval(() => {
-                moveRoller(1); // 自动状态下保持顺时针向前推进一格
-            }, 3500);
+                moveRoller(1); 
+            }, 3000);
         }
 
         function stopAutoplay() {
             if (autoFlipTimer) clearInterval(autoFlipTimer);
         }
 
-        // 驱动索引变更的通用控制机（包含越界无感复位逻辑）
+        // 🌟 核心：无缝循环与越界修复
         function moveRoller(direction) {
             currentIndex += direction;
             updateLayout();
 
             const len = SUB_PHRASES.length;
+            const transitionSpec = 'transform 1.4s cubic-bezier(0.3, 0.05, 0.1, 1)';
+            const itemTransitionSpec = 'transform 1.4s cubic-bezier(0.3, 0.05, 0.1, 1), opacity 1.4s cubic-bezier(0.3, 0.05, 0.1, 1), color 1.4s cubic-bezier(0.3, 0.05, 0.1, 1)';
 
-            // 情况 A：向下滚穿了第二组（超过 20*2） -> 动画结束后在后台瞬间悄悄切回第一组的相同位置 (20)
+            // 情况 A：向下滚穿了第二组（超过 20*2）
             if (currentIndex >= len * 2) {
                 setTimeout(() => {
+                    // 重构：不仅关闭轨道的过渡，同步彻底静音文字子元素的所有过渡通道，实现 1.4s 结束后的无感完美瞬切
                     track.style.transition = 'none';
+                    domItems.forEach(item => item.style.transition = 'none');
+                    
                     currentIndex = len;
                     updateLayout();
-                    track.offsetHeight; // 强制重绘
-                    track.style.transition = 'transform 1.2s cubic-bezier(0.65, 0, 0.35, 1)';
-                }, 1200);
+                    
+                    track.offsetHeight; // 触发强制重绘
+                    
+                    // 恢复全属性正弦过渡
+                    track.style.transition = transitionSpec;
+                    domItems.forEach(item => item.style.transition = itemTransitionSpec);
+                }, 1400); // 完美对齐 1.4s 的动画滑行时长，确保静默瞬切
             }
-            // 情况 B：向上滚穿了第一组的上限（低于 20） -> 动画结束后在后台瞬间悄悄切换回第二组的末尾相同位置
+            // 情况 B：向上滚穿了第一组下限（低于 20）
             if (currentIndex < len) {
                 setTimeout(() => {
                     track.style.transition = 'none';
+                    domItems.forEach(item => item.style.transition = 'none');
+                    
                     currentIndex = len * 2 - 1;
                     updateLayout();
+                    
                     track.offsetHeight; 
-                    track.style.transition = 'transform 1.2s cubic-bezier(0.65, 0, 0.35, 1)';
-                }, 1200);
+                    
+                    track.style.transition = transitionSpec;
+                    domItems.forEach(item => item.style.transition = itemTransitionSpec);
+                }, 1400); // 完美对齐 1.4s 的动画滑行时长
             }
         }
 
-        // 🌟 核心优化：智能防抖与精准选句函数
-        function handleMouseWheel(event) {
-            // 劫持并禁止浏览器本身的页面全局网页滚动
-            event.preventDefault();
+        // 🌟 高级机械锁频阻尼代码：彻底杜绝触控板飞扫！
+        function handleAccumWheel(event) {
+            event.preventDefault(); // 劫持网页滚轮
 
-            // 🔒 节流锁：如果上一次拨动引起的 3D 动画还未完成，直接拒绝本次高频突发事件
+            // 🔒 锁定状态下禁用拨动，需要再次点击解锁
+            if (isLocked) return;
+
+            // 叠加滚动 delta 能量值
+            accumDeltaY += event.deltaY;
+
+            // 如果处于卡位冷却中，拒绝轮盘滚动
             if (isThrottled) return;
 
-            isThrottled = true;
+            if (Math.abs(accumDeltaY) >= ROLL_THRESHOLD) {
+                const direction = accumDeltaY > 0 ? 1 : -1;
+                
+                // 执行切换
+                moveRoller(direction);
+                
+                // 触发物理机械微回弹与震动
+                triggerMechanicalFeedback();
 
-            // 捕捉滚轮的绝对物理手势
-            if (event.deltaY > 0) {
-                // 手指往下拉（滚轮向下），代表想滚动到下一句
-                moveRoller(1);
-            } else if (event.deltaY < 0) {
-                // 手指往上拉（滚轮向上），代表想回退到上一句
-                moveRoller(-1);
+                // 归零能量并启动冷却保护
+                accumDeltaY = 0;
+                isThrottled = true;
+                setTimeout(() => {
+                    isThrottled = false;
+                }, COOL_DOWN);
             }
-
-            // 350ms 的极速冷却锁。这可以让你在手动选句时，手指既能获得极为清脆、干练的“一格一卡位”顺从感，
-            // 同时也允许你以适当的频率流畅地翻页，再也不会产生乱闪和飞速空转的 bug。
-            setTimeout(() => {
-                isThrottled = false;
-            }, 350);
         }
 
+        // 🌟 移动端触摸屏精准防抖轻扫手势
+        function handleTouchStart(event) {
+            touchStartY = event.touches[0].clientY;
+            isTouchCaptured = false;
+        }
+
+        function handleTouchMove(event) {
+            if (isLocked || isTouchCaptured) return;
+            
+            const currentY = event.touches[0].clientY;
+            const diffY = touchStartY - currentY; // 向上滑 diffY 为正，向下滑 diffY 为负
+
+            const SWIPE_THRESHOLD = 45; // 触发轻扫的滑动像素距离
+            if (Math.abs(diffY) > SWIPE_THRESHOLD) {
+                const direction = diffY > 0 ? 1 : -1;
+                
+                moveRoller(direction);
+                triggerMechanicalFeedback();
+                
+                isTouchCaptured = true; // 单次触摸动作仅允许滚动一格，严防惯性暴走
+            }
+        }
+
+        // 🌟 机械卡位物理反馈（震动 + 视觉微反弹）
+        function triggerMechanicalFeedback() {
+            // 1. 触发 Level-0 元素的清脆微反弹动画
+            const activeItem = domItems[currentIndex];
+            if (activeItem) {
+                activeItem.classList.add('tick-pulse');
+                setTimeout(() => {
+                    activeItem.classList.remove('tick-pulse');
+                }, 180);
+            }
+
+            // 2. 支持触觉反馈的移动端进行超微脉冲震动
+            if (navigator.vibrate) {
+                navigator.vibrate(12); // 清脆机械齿轮滴答反馈
+            }
+        }
+
+        // 🌟 点击定格与解锁交互
+        function toggleLock() {
+            isLocked = !isLocked;
+            
+            if (isLocked) {
+                // 🔐 锁定：暂停轮播，更新 UI 呈现
+                stopAutoplay();
+                lockGlow.classList.add('active');
+                
+                anchorNormal.classList.remove('visible');
+                anchorNormal.classList.add('hidden');
+                
+                anchorLocked.classList.remove('hidden');
+                anchorLocked.classList.add('visible');
+
+                statusTip.textContent = "My vibe today • Tap again to unlock";
+                statusTip.classList.add('locked');
+
+                // 物理震动两次暗示锁定成功
+                if (navigator.vibrate) {
+                    navigator.vibrate([18, 50, 18]);
+                }
+            } else {
+                // 🔓 解锁：恢复常态
+                lockGlow.classList.remove('active');
+                
+                anchorLocked.classList.remove('visible');
+                anchorLocked.classList.add('hidden');
+                
+                anchorNormal.classList.remove('hidden');
+                anchorNormal.classList.add('visible');
+
+                statusTip.textContent = "Scroll to wheel • Tap to freeze";
+                statusTip.classList.remove('removed');
+
+                if (navigator.vibrate) {
+                    navigator.vibrate(10);
+                }
+
+                // 只有在鼠标已经离开窗口时才立即重新轮播，否则由于 hover 静止它应该继续暂停
+                if (!isHovered) {
+                    startAutoplay();
+                }
+            }
+            
+            updateLayout();
+        }
+
+        // 启动滚轴装置
         initScroller();
     </script>
 </body>
